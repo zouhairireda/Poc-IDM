@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.poc.idm.xtext.wdl
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: org.poc.idm.xtext.wdl; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext;visibility:=reexport,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.poc.idm.wdl,
+ org.eclipse.xtext.util,
+ org.eclipse.xtext.xbase.lib,
+ org.antlr.runtime,
+ org.eclipse.xtext.common.types,
+ org.objectweb.asm;bundle-version="[5.0.1,6.0.0)";resolution:=optional
+Import-Package: org.apache.log4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.poc.idm.xtext.wdl,
+ org.poc.idm.xtext.wdl.services,
+ org.poc.idm.xtext.wdl.serializer,
+ org.poc.idm.xtext.wdl.parser.antlr,
+ org.poc.idm.xtext.wdl.parser.antlr.internal,
+ org.poc.idm.xtext.wdl.validation,
+ org.poc.idm.xtext.wdl.scoping,
+ org.poc.idm.xtext.wdl.generator,
+ org.poc.idm.xtext.wdl.formatting
