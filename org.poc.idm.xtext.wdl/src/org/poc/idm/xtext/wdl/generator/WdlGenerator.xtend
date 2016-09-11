@@ -3,9 +3,13 @@
  */
 package org.poc.idm.xtext.wdl.generator
 
+import Wdl.Page
+import Wdl.Website
+import java.util.Calendar
+import java.util.GregorianCalendar
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.xtext.generator.IGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess
+import org.eclipse.xtext.generator.IGenerator
 
 /**
  * Generates code from your model files on save.
@@ -13,12 +17,54 @@ import org.eclipse.xtext.generator.IFileSystemAccess
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
  */
 class WdlGenerator implements IGenerator {
-	
+
 	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
-//		fsa.generateFile('greetings.txt', 'People to greet: ' + 
-//			resource.allContents
-//				.filter(typeof(Greeting))
-//				.map[name]
-//				.join(', '))
+		val websiteObject = resource.allContents.toIterable.filter(typeof(Website)).head
+
+		val fullCopyright = new GregorianCalendar().get(Calendar.YEAR) + ''' &copy; ''' + websiteObject.copyright
+		val isMobile = websiteObject.isMobileFriendly
+
+		if (!isMobile) {
+
+			fsa.generateFile("screen.css", css)
+
+			for (Page p : resource.allContents.toIterable.filter(typeof(Page))) {
+				fsa.generateFile(p.name + ".html", '''
+				<html>
+				<head>
+				<link rel="stylesheet" type="text/css" href="screen.css">
+				<title>''' + p.title + '''</title></head>
+                          <body>''' + p.menu + '''<p>''' + lorem + '''</p>
+                          <hr/>
+                          <footer>''' + fullCopyright + '''</footer>
+                          </body>
+                          </html>''')
+			}
+		} else {
+			// code de génération jQuery Mobile
+		}
 	}
+
+	def getMenu(
+		Page p
+	) '''<ul id="menu_horizontal">
+		«FOR cible : p.targets»
+			<li><a href="./«cible.name».html"> «cible.title» </a></li>
+		«ENDFOR»
+		    </ul>
+	  '''
+
+	def css() '''/* Je sélectionne les <li> du menu horizontal */
+                ul#menu_horizontal li {
+                display : inline;
+                padding : 0 0.5em; /* Pour espacer les boutons entre eux */
+                }
+                a:hover { color:red; }
+                ul#menu_horizontal {
+                list-style-type : none; /* Car sinon les puces se placent n'importe où */
+                }
+            '''
+
+	def lorem() '''Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'''
+
 }
